@@ -1,12 +1,563 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WiTech Consulting</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="WiTech Consulting — wireless technology and engineering advisory services by Dr. Swarun Kumar, Carnegie Mellon University.">
+  <title>WiTech Consulting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #0B1829;
+      --navy-mid:  #112240;
+      --navy-card: #162a4a;
+      --white:     #F0F4F8;
+      --blue:      #3B82F6;
+      --blue-dim:  #1D4ED8;
+      --slate:     #94A3B8;
+      --slate-dim: #64748B;
+      --border:    rgba(148,163,184,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 4rem;
+      background: rgba(11,24,41,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--slate);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 4rem 6rem;
+      gap: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%; left: -10%;
+      width: 60%; height: 80%;
+      background: radial-gradient(ellipse, rgba(59,130,246,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 2rem; height: 1px;
+      background: var(--blue);
+    }
+    .hero-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 3.75rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+    }
+    .hero-headline em {
+      font-style: normal;
+      color: var(--blue);
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--slate);
+      max-width: 44ch;
+      margin-bottom: 2.5rem;
+      line-height: 1.75;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      padding: 0.85rem 1.75rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .hero-cta:hover { background: var(--blue-dim); transform: translateY(-1px); }
+    .hero-cta svg { width: 1rem; height: 1rem; }
+
+    /* Signature element: animated RF signal */
+    .hero-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .signal-wrap {
+      position: relative;
+      width: 360px; height: 360px;
+    }
+    .signal-svg {
+      width: 100%; height: 100%;
+    }
+    .signal-ring {
+      fill: none;
+      stroke: var(--blue);
+      stroke-width: 1;
+      transform-origin: center;
+      animation: pulse 3s ease-out infinite;
+      opacity: 0;
+    }
+    .signal-ring:nth-child(1) { animation-delay: 0s; }
+    .signal-ring:nth-child(2) { animation-delay: 0.75s; }
+    .signal-ring:nth-child(3) { animation-delay: 1.5s; }
+    .signal-ring:nth-child(4) { animation-delay: 2.25s; }
+    @keyframes pulse {
+      0%   { r: 20; opacity: 0.8; }
+      100% { r: 160; opacity: 0; }
+    }
+    .signal-dot {
+      fill: var(--blue);
+    }
+    .wave-line {
+      fill: none;
+      stroke: var(--blue);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      opacity: 0.35;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .signal-ring { animation: none; opacity: 0.15; }
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat {
+      background: var(--navy);
+      padding: 2.5rem 3rem;
+      text-align: left;
+    }
+    .stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .stat-number span { color: var(--blue); }
+    .stat-label {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--slate);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 6rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--white);
+      margin-bottom: 1.25rem;
+      line-height: 1.2;
+    }
+    .section-body {
+      font-size: 1rem;
+      color: var(--slate);
+      max-width: 60ch;
+      line-height: 1.8;
+    }
+
+    /* ── EXPERTISE ── */
+    .expertise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      margin-top: 3.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .expertise-card {
+      background: var(--navy-card);
+      padding: 2rem 2rem 2.25rem;
+      transition: background 0.2s;
+    }
+    .expertise-card:hover { background: #1a3255; }
+    .card-icon {
+      width: 2rem; height: 2rem;
+      margin-bottom: 1.25rem;
+      color: var(--blue);
+    }
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    .card-body {
+      font-size: 0.875rem;
+      color: var(--slate);
+      line-height: 1.7;
+    }
+
+    /* ── ABOUT ── */
+    .about-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 5rem;
+      align-items: start;
+      margin-top: 1rem;
+    }
+    .about-meta {
+      position: sticky;
+      top: 6rem;
+    }
+    .about-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .about-title {
+      font-size: 0.875rem;
+      color: var(--blue);
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+    .about-affil {
+      font-size: 0.8rem;
+      color: var(--slate-dim);
+      line-height: 1.8;
+    }
+    .about-affil a {
+      color: var(--slate);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .about-affil a:hover { color: var(--blue); border-color: var(--blue); }
+    .about-body {
+      font-size: 1rem;
+      color: var(--slate);
+      line-height: 1.85;
+    }
+    .about-body p + p { margin-top: 1.25rem; }
+
+    /* ── CONTACT ── */
+    .contact-wrap {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+    .contact-body { font-size: 1rem; color: var(--slate); max-width: 48ch; line-height: 1.75; }
+    .contact-links { display: flex; flex-direction: column; gap: 1rem; flex-shrink: 0; }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--white);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 0.7rem 1.4rem;
+      border-radius: 6px;
+      transition: border-color 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .contact-link:hover { border-color: var(--blue); color: var(--blue); }
+    .contact-link svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--slate-dim);
+      text-decoration: none;
+    }
+    .footer-logo span { color: var(--blue); }
+    .footer-copy { font-size: 0.75rem; color: var(--slate-dim); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 4rem; gap: 3rem; }
+      .hero-visual { order: -1; }
+      .signal-wrap { width: 220px; height: 220px; }
+      .stats { grid-template-columns: 1fr; }
+      .stat { padding: 1.75rem 1.5rem; }
+      section { padding: 4rem 1.5rem; }
+      .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .about-meta { position: static; }
+      .contact-wrap { flex-direction: column; padding: 2rem 1.5rem; }
+      .contact-links { flex-direction: row; flex-wrap: wrap; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
 </head>
 <body>
-    <h1>WiTech Consulting</h1>
-    <p>        WiTech Consulting provides direct access to this research capability — offering technical advisory, system evaluation, prototype assessment, and strategic guidance for organizations navigating complex wireless deployments.</p>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>Wi</span>Tech Consulting</a>
+  <ul class="nav-links">
+    <li><a href="#expertise">Expertise</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="max-width:100%; padding-top:8rem;">
+  <div class="hero-copy">
+    <p class="hero-eyebrow">Wireless Technology Advisory</p>
+    <h1 class="hero-headline">
+      Research-grade<br>
+      expertise in<br>
+      <em>wireless systems</em>
+    </h1>
+    <p class="hero-sub">
+      Strategic and technical consulting in wireless sensing, RF networking, satellite communications, and emerging wireless intelligence — bridging academic research and real-world deployment.
+    </p>
+    <a class="hero-cta" href="#contact">
+      Get in touch
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+    </a>
+  </div>
+
+  <!-- Signature element: animated RF rings -->
+  <div class="hero-visual">
+    <div class="signal-wrap">
+      <svg class="signal-svg" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ambient sinusoid background -->
+        <path class="wave-line" d="M 40 180 Q 80 130 120 180 Q 160 230 200 180 Q 240 130 280 180 Q 310 220 320 200"/>
+        <path class="wave-line" d="M 40 200 Q 90 155 130 200 Q 170 245 210 200 Q 250 155 290 200" opacity="0.18"/>
+        <!-- Pulsing rings from center -->
+        <circle class="signal-ring" cx="180" cy="180" r="20"/>
+        <circle class="signal-ring" cx="180" cy="180" r="20"/>
+        <circle class="signal-ring" cx="180" cy="180" r="20"/>
+        <circle class="signal-ring" cx="180" cy="180" r="20"/>
+        <!-- Center dot -->
+        <circle class="signal-dot" cx="180" cy="180" r="5"/>
+        <!-- Static decorative rings -->
+        <circle fill="none" stroke="rgba(59,130,246,0.08)" stroke-width="1" cx="180" cy="180" r="80"/>
+        <circle fill="none" stroke="rgba(59,130,246,0.05)" stroke-width="1" cx="180" cy="180" r="130"/>
+        <!-- Cardinal ticks -->
+        <line x1="180" y1="44" x2="180" y2="56" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
+        <line x1="180" y1="304" x2="180" y2="316" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
+        <line x1="44" y1="180" x2="56" y2="180" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
+        <line x1="304" y1="180" x2="316" y2="180" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-number">15<span>+</span></div>
+    <div class="stat-label">Years of wireless research</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">$<span>30M</span></div>
+    <div class="stat-label">Research funding secured</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">100<span>+</span></div>
+    <div class="stat-label">Publications & patents</div>
+  </div>
+</div>
+
+<!-- EXPERTISE -->
+<section id="expertise">
+  <p class="section-eyebrow">Areas of focus</p>
+  <h2 class="section-title">Where research meets deployment</h2>
+  <p class="section-body">
+    WiTech Consulting translates cutting-edge academic work into actionable technical strategy — from system architecture through prototype evaluation.
+  </p>
+  <div class="expertise-grid">
+    <div class="expertise-card">
+      <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12 20.25h.008v.008H12v-.008z"/>
+      </svg>
+      <div class="card-title">Wireless Sensing</div>
+      <div class="card-body">RF-based human activity recognition, indoor localization, and non-invasive health monitoring using commodity wireless hardware.</div>
+    </div>
+    <div class="expertise-card">
+      <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.348 14.652a3.75 3.75 0 010-5.304m5.304 0a3.75 3.75 0 010 5.304m-7.425 2.121a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.807-3.808-9.98 0-13.788m13.788 0c3.808 3.807 3.808 9.981 0 13.788M12 12h.008v.008H12V12z"/>
+      </svg>
+      <div class="card-title">Satellite Networking</div>
+      <div class="card-body">LEO constellation architecture, spectrum sharing, cross-layer protocol design, and ground station optimization for next-generation NTN systems.</div>
+    </div>
+    <div class="expertise-card">
+      <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
+      </svg>
+      <div class="card-title">Wireless Intelligence</div>
+      <div class="card-body">ML-driven spectrum management, signal classification, and adaptive beamforming. Deploying AI at the wireless edge for real-time inference.</div>
+    </div>
+    <div class="expertise-card">
+      <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/>
+      </svg>
+      <div class="card-title">Biomedical Wireless</div>
+      <div class="card-body">Wireless power and data transfer for implantable and wearable medical devices. Low-power protocol design for continuous patient monitoring.</div>
+    </div>
+    <div class="expertise-card">
+      <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253"/>
+      </svg>
+      <div class="card-title">LP-WAN & IoT Networks</div>
+      <div class="card-body">Long-range low-power network design for large-scale IoT deployments. Backscatter communication, ambient RF harvesting, and battery-free sensing.</div>
+    </div>
+    <div class="expertise-card">
+      <svg class="card-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+      </svg>
+      <div class="card-title">Spectrum & Regulatory</div>
+      <div class="card-body">Spectrum policy advisory, regulatory compliance for wireless devices, and coexistence analysis for 5G/6G and unlicensed band deployments.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="border-top: 1px solid var(--border);">
+    <div class="about-body">
+      <p>
+        WiTech Consulting provides direct access to this research capability — offering technical advisory, system evaluation, prototype assessment, and strategic guidance for organizations navigating complex wireless deployments. 
+      </p>
+      <p>
+        Engagements are structured to match your timeline and scope — from targeted technical reviews to extended research partnerships. All work is conducted under a clear statement of work with defined deliverables.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="border-top: 1px solid var(--border);">
+  <p class="section-eyebrow">Get in touch</p>
+  <h2 class="section-title">Start a conversation</h2>
+  <div class="contact-wrap">
+    <p class="contact-body">
+      Engagements typically begin with a brief discovery call to understand your technical challenge and determine whether WiTech Consulting is the right fit. Response within one business day.
+    </p>
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:swarun@witechconsult.com">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+        swarun@witechconsult.com
+      </a>
+      <a class="contact-link" href="https://witechlab.com" target="_blank" rel="noopener">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+        WiTech Lab — CMU
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a class="footer-logo" href="#"><span>Wi</span>Tech Consulting</a>
+  <span class="footer-copy">© 2026 WiTech Consulting · Pittsburgh, PA</span>
+</footer>
+
 </body>
 </html>
